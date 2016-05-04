@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wafd.FXMLLoginController">
+    <stylesheets>
+        <URL value="@/styles/fxmlwafd.css" />
+    </stylesheets>
+   <children>
+      <TextField fx:id="fxUser" layoutX="208.0" layoutY="149.0" promptText="usuario" />
+      <PasswordField fx:id="fxPass" layoutX="208.0" layoutY="200.0" promptText="contraseña" />
+      <Button defaultButton="true" layoutX="305.0" layoutY="264.0" mnemonicParsing="false" onAction="#handleLoginAction" text="Login" />
+      <Pane fx:id="fxPanelLoad" prefHeight="400.0" prefWidth="600.0" style="-fx-opacity: 0.9; -fx-background-color: grey;" visible="false">
+         <children>
+            <ImageView fx:id="fxSplashScreen" fitHeight="72.0" fitWidth="72.0" layoutX="246.0" layoutY="157.0" pickOnBounds="true" smooth="false">
+               <image>
+                  <Image url="@../img/load.gif" />
+               </image>
+            </ImageView>
+            <Label layoutX="199.0" layoutY="88.0" prefHeight="51.0" prefWidth="182.0" text="Cargando" textAlignment="CENTER">
+               <font>
+                  <Font size="35.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Label layoutX="161.0" layoutY="153.0" text="Usuario" />
+      <Label layoutX="142.0" layoutY="204.0" text="Contraseña" />
+   </children>
+</AnchorPane>
