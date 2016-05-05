@@ -200,6 +200,7 @@ public class FXMLWafdController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         fxListaAlumnos.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fxListaAlumnos.setItems(FXCollections.observableArrayList());
+        fxDateInicio.setValue(LocalDate.now());
        
     }
 
