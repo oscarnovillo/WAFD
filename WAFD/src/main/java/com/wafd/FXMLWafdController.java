@@ -43,26 +43,26 @@ import model.SesionAsignatura;
  * @author oscar
  */
 public class FXMLWafdController implements Initializable {
-
+    
     @FXML
     private AnchorPane fxPane;
-
+    
     @FXML
     private ComboBox<Asignatura> fxAsignaturas;
-
+    
     @FXML
     private Button fxBtFalta;
     @FXML
     private Button fxBtJustificacion;
-
+    
     @FXML
     private ListView<Alumno> fxListaAlumnos;
-
+    
     @FXML
     private DatePicker fxDateInicio;
     @FXML
     private DatePicker fxDateFin;
-
+    
     @FXML
     private VBox fxVBoxLunes;
     @FXML
@@ -73,10 +73,10 @@ public class FXMLWafdController implements Initializable {
     private VBox fxVBoxJueves;
     @FXML
     private VBox fxVBoxViernes;
-
+    
     LinkedHashMap<String, Asignatura> asignaturas;
     Map<String, String> cookies;
-
+    
     @FXML
     private void handleChangeAsignatura(ActionEvent event) {
         System.out.println(fxAsignaturas.getSelectionModel().getSelectedItem());
@@ -86,7 +86,7 @@ public class FXMLWafdController implements Initializable {
         fxVBoxMiercoles.getChildren().clear();
         fxVBoxJueves.getChildren().clear();
         fxVBoxViernes.getChildren().clear();
-
+        
         for (SesionAsignatura sesion : asignatura.getSesiones().values()) {
             CheckBox ck = new CheckBox(sesion.getDiaSemana() + " " + sesion.getHoraInicio());
             ck.getProperties().put("sesion", sesion);
@@ -108,24 +108,23 @@ public class FXMLWafdController implements Initializable {
                 case "V":
                     vbox = fxVBoxViernes;
                     break;
-
+                
             }
             vbox.getChildren().add(ck);
         }
-
+        
         fxListaAlumnos.getItems().clear();
         for (Alumno alumno : asignatura.getAlumnos().values()) {
             fxListaAlumnos.getItems().add(alumno);
         }
     }
-
+    
     @FXML
     private void handleFalta(ActionEvent event) {
-       
-
+        
         LocalDate date = fxDateInicio.getValue();
         LocalDate fin = fxDateFin.getValue();
-         String mensaje = "";
+        String mensaje = "";
         do {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEEE", new Locale("es", "ES"));
             DateTimeFormatter formatterFecha = DateTimeFormatter.ofPattern("dd/MM/y", new Locale("es", "ES"));
@@ -156,32 +155,31 @@ public class FXMLWafdController implements Initializable {
                         SesionAsignatura sesion = ((SesionAsignatura) ck.getProperties().get("sesion"));
                         ControlCarga cg = new ControlCarga();
                         Asignatura asignatura = asignaturas.get(fxAsignaturas.getSelectionModel().getSelectedItem().getCodigo());
-                       
-                        if (cg.meterIncidencia(this.cookies, fxListaAlumnos.getSelectionModel().getSelectedItems(),
-                                asignatura, sesion, date.format(formatterFecha)))
-                        {
-                            mensaje +="\n Cambios Guardados para "+date.format(formatterFecha)+" en sesion "+sesion.getId();
-                        }
-                        else mensaje += "\n Error al actualizar faltas del dia "+date.format(formatterFecha)+" en sesion "+sesion.getId();
                         
-                       
-                        //fxAux.getItems().add(a.getNombre() + " " + date.format(formatterFecha) + " " + sesion.getDiaSemana() + " " + sesion.getHoraInicio());
+                        if (cg.meterIncidencia(this.cookies, fxListaAlumnos.getSelectionModel().getSelectedItems(),
+                                asignatura, sesion, date.format(formatterFecha))) {
+                            mensaje += "\n Cambios Guardados para " + date.format(formatterFecha) + " en sesion " + sesion.getId();
+                        } else {
+                            mensaje += "\n Error al actualizar faltas del dia " + date.format(formatterFecha) + " en sesion " + sesion.getId();
+                        }
 
+                        //fxAux.getItems().add(a.getNombre() + " " + date.format(formatterFecha) + " " + sesion.getDiaSemana() + " " + sesion.getHoraInicio());
                     }
                 }
             }
             date = date.plus(1, ChronoUnit.DAYS);
         } while (fin != null && date.compareTo(fin) <= 0);
-        Alert a = new Alert(Alert.AlertType.INFORMATION,mensaje,ButtonType.CLOSE);
-                        a.show();
+        Alert a = new Alert(Alert.AlertType.INFORMATION, mensaje, ButtonType.CLOSE);
+        a.initOwner(this.getStage());
+        a.show();
     }
-
+    
     private Stage stage;
-
+    
     public Stage getStage() {
         return stage;
     }
-
+    
     public void setStage(Stage stage) {
         this.stage = stage;
         this.cookies = (Map<String, String>) stage.getProperties().get("cookies");
@@ -190,7 +188,7 @@ public class FXMLWafdController implements Initializable {
         for (Asignatura asig : asignaturas.values()) {
             fxAsignaturas.getItems().add(asig);
         }
-
+        
     }
 
     /**
@@ -201,7 +199,7 @@ public class FXMLWafdController implements Initializable {
         fxListaAlumnos.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fxListaAlumnos.setItems(FXCollections.observableArrayList());
         fxDateInicio.setValue(LocalDate.now());
-       
+        
     }
-
+    
 }
