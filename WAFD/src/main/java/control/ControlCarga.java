@@ -158,8 +158,9 @@ public class ControlCarga {
     }
 
     public void sacarFaltaSesion(Map<String, String> cookies, List<Alumno> alumnos, Asignatura asignatura,
-            SesionAsignatura sesion, String fecha)
-    {
+            SesionAsignatura sesion, String fecha) {
+        // mirar primero si ya estaba sacada TODO
+
         Document homePage = null;
         boolean ok = false;
         try {
@@ -190,9 +191,7 @@ public class ControlCarga {
         Element form = ele.get(0);
         // cargar los datos de la sesion
         FaltasSesion fs = new FaltasSesion(sesion, fecha);
-        sesion.getFaltas().put(fecha,fs);
-        
-        ArrayList<FaltaSesionAlumno> faltas = new ArrayList<>();
+        sesion.getFaltas().put(fecha, fs);
 
         asignatura.getAlumnos().values().stream().forEach((alumno) -> {
             FaltaSesionAlumno falta = new FaltaSesionAlumno();
@@ -208,57 +207,68 @@ public class ControlCarga {
         });
 
     }
-    
+
     public boolean meterIncidencia(Map<String, String> cookies, List<Alumno> alumnos, Asignatura asignatura,
             SesionAsignatura sesion, String fecha) {
-        Document homePage = null;
         boolean ok = false;
-        try {
-            homePage = Jsoup.connect("https://gestiona.madrid.org/wafd/IntroIncidenciasCentro.icm")
-                    .data("optionsProfesores", "null")
-                    .data("codigoAsignatura", asignatura.getCodigo())
-                    .data("codigoIdioma", asignatura.getIdioma())
-                    .data("codigoReligion", asignatura.getReligion())
-                    .data("esGrupoMateria", asignatura.getEsGrupoMateria())
-                    .data("codigoSesion", sesion.getSesion())
-                    .data("diaSemana", sesion.getDiaSemana())
-                    .data("nombreProfesor", "")
-                    //.data("franja","08:30:09:25")
-                    .data("haySesiones", "0")
-                    .data("sesion", sesion.getSesion())
-                    .data("grupo", asignatura.getGrupo())
-                    .data("asignatura", asignatura.getDescripcion())
-                    .data("pantallaIncidencia", "S")
-                    .data("profesor", asignatura.getProfesor())
-                    .data("dia", fecha)
-                    .data("diaold", fecha)
-                    .cookies(cookies)
-                    .post();
-        } catch (IOException ex) {
-            Logger.getLogger(ControlCarga.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        Elements ele = homePage.getElementsByTag("form");
-        Element form = ele.get(0);
-        // cargar los datos de la sesion
-        ArrayList<FaltaSesionAlumno> faltas = new ArrayList<>();
+        this.sacarFaltaSesion(cookies, alumnos, asignatura, sesion, fecha);
+//        Document homePage = null;
+//        boolean ok = false;
+//        try {
+//            homePage = Jsoup.connect("https://gestiona.madrid.org/wafd/IntroIncidenciasCentro.icm")
+//                    .data("optionsProfesores", "null")
+//                    .data("codigoAsignatura", asignatura.getCodigo())
+//                    .data("codigoIdioma", asignatura.getIdioma())
+//                    .data("codigoReligion", asignatura.getReligion())
+//                    .data("esGrupoMateria", asignatura.getEsGrupoMateria())
+//                    .data("codigoSesion", sesion.getSesion())
+//                    .data("diaSemana", sesion.getDiaSemana())
+//                    .data("nombreProfesor", "")
+//                    //.data("franja","08:30:09:25")
+//                    .data("haySesiones", "0")
+//                    .data("sesion", sesion.getSesion())
+//                    .data("grupo", asignatura.getGrupo())
+//                    .data("asignatura", asignatura.getDescripcion())
+//                    .data("pantallaIncidencia", "S")
+//                    .data("profesor", asignatura.getProfesor())
+//                    .data("dia", fecha)
+//                    .data("diaold", fecha)
+//                    .cookies(cookies)
+//                    .post();
+//        } catch (IOException ex) {
+//            Logger.getLogger(ControlCarga.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        Elements ele = homePage.getElementsByTag("form");
+//        Element form = ele.get(0);
+//        // cargar los datos de la sesion
+//        ArrayList<FaltaSesionAlumno> faltas = new ArrayList<>();
+//
+//        asignatura.getAlumnos().values().stream().forEach((alumno) -> {
+//            FaltaSesionAlumno falta = new FaltaSesionAlumno();
+//            falta.setAlumno(alumno);
+//            falta.setSesion(sesion);
+//            String asistencia = form.getElementsByAttributeValue("name", "asistencia" + alumno.getId()).select("option[selected]").val();
+//            String amonestacion = form.getElementsByAttributeValue("name", "amonestacion" + alumno.getId()).select("option[selected]").val();
+//            String dirty = form.getElementsByAttributeValue("name", "dirty" + alumno.getId()).val();
+//
+//            if (alumnos.indexOf(alumno) != -1) {
+//                dirty = "S";
+//                asistencia = "F";
+//            }
+//
+//            falta.setAsistencia(asistencia);
+//            falta.setAmonestacion(amonestacion);
+//            falta.setDirty(dirty);
+//            faltas.add(falta);
+//        });
 
-        asignatura.getAlumnos().values().stream().forEach((alumno) -> {
-            FaltaSesionAlumno falta = new FaltaSesionAlumno();
-            falta.setAlumno(alumno);
-            falta.setSesion(sesion);
-            String asistencia = form.getElementsByAttributeValue("name", "asistencia" + alumno.getId()).select("option[selected]").val();
-            String amonestacion = form.getElementsByAttributeValue("name", "amonestacion" + alumno.getId()).select("option[selected]").val();
-            String dirty = form.getElementsByAttributeValue("name", "dirty" + alumno.getId()).val();
+        FaltasSesion fs = sesion.getFaltas().get(fecha);
 
-            if (alumnos.indexOf(alumno) != -1) {
-                dirty = "S";
-                asistencia = "F";
-            }
+        alumnos.stream().forEach((alumno) -> {
+            FaltaSesionAlumno falta = fs.getFaltas().get(alumno.getId());
+            falta.setAsistencia("F");
+            falta.setDirty("S");
 
-            falta.setAsistencia(asistencia);
-            falta.setAmonestacion(amonestacion);
-            falta.setDirty(dirty);
-            faltas.add(falta);
         });
 
         Connection con = Jsoup.connect("https://gestiona.madrid.org/wafd/IntroIncidenciasCentro.icm")
@@ -280,7 +290,7 @@ public class ControlCarga {
                 .data("dia", fecha)
                 .data("alumnos", asignatura.getCodAlumnos());
 
-        faltas.stream().forEach((falta) -> {
+        fs.getFaltas().values().stream().forEach((falta) -> {
 
             con.data("asistencia" + falta.getAlumno().getId(), falta.getAsistencia())
                     .data("amonestacion" + falta.getAlumno().getId(), falta.getAmonestacion())
