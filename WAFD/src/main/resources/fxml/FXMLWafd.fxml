@@ -7,14 +7,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" fx:id="fxPane" prefHeight="690.0" prefWidth="626.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wafd.FXMLWafdController">
+<AnchorPane id="AnchorPane" fx:id="fxPane" prefHeight="821.0" prefWidth="833.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wafd.FXMLWafdController">
     <stylesheets>
         <URL value="@/styles/fxmlwafd.css" />
     </stylesheets>
    <children>
       <DatePicker fx:id="fxDateFin" layoutX="342.0" layoutY="40.0" />
       <ComboBox fx:id="fxAsignaturas" layoutX="158.0" layoutY="10.0" onAction="#handleChangeAsignatura" prefHeight="25.0" prefWidth="358.0" />
-      <ListView fx:id="fxListaAlumnos" layoutX="20.0" layoutY="184.0" prefHeight="476.0" prefWidth="317.0" />
+      <ListView fx:id="fxListaAlumnos" layoutX="21.0" layoutY="179.0" prefHeight="312.0" prefWidth="317.0" />
       <Button fx:id="fxBtFalta" layoutX="373.0" layoutY="179.0" mnemonicParsing="false" onAction="#handleFalta" text="falta" />
       <Button fx:id="fxBTJustificacion" layoutX="373.0" layoutY="233.0" mnemonicParsing="false" text="justificacion" />
       <DatePicker fx:id="fxDateInicio" layoutX="92.0" layoutY="40.0" />
@@ -32,5 +32,11 @@
          </children>
       </HBox>
       <Label layoutX="30.0" layoutY="160.0" text="Listado de Alumnos" />
+      <TableView fx:id="fxTablaAlumnos" layoutX="20.0" layoutY="502.0" prefHeight="286.0" prefWidth="793.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
    </children>
 </AnchorPane>

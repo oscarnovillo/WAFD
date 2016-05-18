@@ -30,9 +30,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 import model.Alumno;
 import model.Asignatura;
 import model.SesionAsignatura;
@@ -43,26 +46,29 @@ import model.SesionAsignatura;
  * @author oscar
  */
 public class FXMLWafdController implements Initializable {
-    
+
+    @FXML
+    private TableView fxTablaAlumnos;
+
     @FXML
     private AnchorPane fxPane;
-    
+
     @FXML
     private ComboBox<Asignatura> fxAsignaturas;
-    
+
     @FXML
     private Button fxBtFalta;
     @FXML
     private Button fxBtJustificacion;
-    
+
     @FXML
     private ListView<Alumno> fxListaAlumnos;
-    
+
     @FXML
     private DatePicker fxDateInicio;
     @FXML
     private DatePicker fxDateFin;
-    
+
     @FXML
     private VBox fxVBoxLunes;
     @FXML
@@ -73,12 +79,16 @@ public class FXMLWafdController implements Initializable {
     private VBox fxVBoxJueves;
     @FXML
     private VBox fxVBoxViernes;
-    
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEEE", new Locale("es", "ES"));
+    DateTimeFormatter formatterFecha = DateTimeFormatter.ofPattern("dd/MM/y", new Locale("es", "ES"));
+
     LinkedHashMap<String, Asignatura> asignaturas;
     Map<String, String> cookies;
-    
+
     @FXML
     private void handleChangeAsignatura(ActionEvent event) {
+
         System.out.println(fxAsignaturas.getSelectionModel().getSelectedItem());
         Asignatura asignatura = asignaturas.get(fxAsignaturas.getSelectionModel().getSelectedItem().getCodigo());
         fxVBoxLunes.getChildren().clear();
@@ -86,7 +96,7 @@ public class FXMLWafdController implements Initializable {
         fxVBoxMiercoles.getChildren().clear();
         fxVBoxJueves.getChildren().clear();
         fxVBoxViernes.getChildren().clear();
-        
+
         for (SesionAsignatura sesion : asignatura.getSesiones().values()) {
             CheckBox ck = new CheckBox(sesion.getDiaSemana() + " " + sesion.getHoraInicio());
             ck.getProperties().put("sesion", sesion);
@@ -108,26 +118,25 @@ public class FXMLWafdController implements Initializable {
                 case "V":
                     vbox = fxVBoxViernes;
                     break;
-                
+
             }
             vbox.getChildren().add(ck);
         }
-        
+
         fxListaAlumnos.getItems().clear();
         for (Alumno alumno : asignatura.getAlumnos().values()) {
             fxListaAlumnos.getItems().add(alumno);
         }
+
     }
-    
+
     @FXML
     private void handleFalta(ActionEvent event) {
-        
+
         LocalDate date = fxDateInicio.getValue();
         LocalDate fin = fxDateFin.getValue();
         String mensaje = "";
         do {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEEE", new Locale("es", "ES"));
-            DateTimeFormatter formatterFecha = DateTimeFormatter.ofPattern("dd/MM/y", new Locale("es", "ES"));
             // poner sesiones del día.
             VBox vbox = null;
             switch (date.format(formatter).toUpperCase()) {
@@ -155,7 +164,7 @@ public class FXMLWafdController implements Initializable {
                         SesionAsignatura sesion = ((SesionAsignatura) ck.getProperties().get("sesion"));
                         ControlCarga cg = new ControlCarga();
                         Asignatura asignatura = asignaturas.get(fxAsignaturas.getSelectionModel().getSelectedItem().getCodigo());
-                        
+
                         if (cg.meterIncidencia(this.cookies, fxListaAlumnos.getSelectionModel().getSelectedItems(),
                                 asignatura, sesion, date.format(formatterFecha))) {
                             mensaje += "\n Cambios Guardados para " + date.format(formatterFecha) + " en sesion " + sesion.getId();
@@ -173,13 +182,13 @@ public class FXMLWafdController implements Initializable {
         a.initOwner(this.getStage());
         a.show();
     }
-    
+
     private Stage stage;
-    
+
     public Stage getStage() {
         return stage;
     }
-    
+
     public void setStage(Stage stage) {
         this.stage = stage;
         this.cookies = (Map<String, String>) stage.getProperties().get("cookies");
@@ -188,7 +197,7 @@ public class FXMLWafdController implements Initializable {
         for (Asignatura asig : asignaturas.values()) {
             fxAsignaturas.getItems().add(asig);
         }
-        
+
     }
 
     /**
@@ -199,7 +208,10 @@ public class FXMLWafdController implements Initializable {
         fxListaAlumnos.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fxListaAlumnos.setItems(FXCollections.observableArrayList());
         fxDateInicio.setValue(LocalDate.now());
-        
+        fxDateInicio.setShowWeekNumbers(false);
+        fxTablaAlumnos.getColumns().clear();
+        fxTablaAlumnos.getColumns().add(new TableColumn("Alumno"));
+
     }
-    
+
 }
