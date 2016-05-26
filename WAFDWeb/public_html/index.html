@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="js/libs/jquery/jquery.min.js" type="text/javascript"></script>
+        <script>
+            
+            function login()
+            {
+                 var parametros = new Object();
+                parametros.USUARIO = $("#login").val();
+                parametros.CLAVE= $("#password").val();
+                
+            $.ajax({
+                    data: parametros,
+                    /*{"idClient": "WEB.SERV.oscar.novillo@gmail.com",
+                        "passKey": "0927E7EE-2496-47D4-AFC0-57FD763AD449",
+                    "SelectedDate":"16/05/2016",
+                "Lines": "145"},*/
+                    url: 'https://gestiona.madrid.org/wafd/ValidaUsuario.icm',
+                    dataType: 'html',
+                    type: 'POST'
+                     
+                }).done(function (response) {
+                    // do something with the response, e.g. isolate the id of a linked resource     
+                    
+                        $("#response").html(response);
+                    
+                    
+
+                });
+               
+                
+            }
+            
+            
+        </script>
+    </head>
+    <body>
+        <div >
+            <input id="login" size="12" type="text"/>
+            <input id="password" size="12" type="password"/>
+            <input type="button" value="login" onclick="login();"/>
+        </div>
+        <div id="response"></div>
+    </body >
+</html>

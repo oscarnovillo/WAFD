@@ -22,7 +22,12 @@
             <artifactId>jsoup</artifactId>
             <version>1.8.3</version>
         </dependency>
-    </dependencies>
+          <dependency>
+               <groupId>com.mycompany</groupId>
+               <artifactId>WAFD.Core</artifactId>
+               <version>1.0-SNAPSHOT</version>
+          </dependency>
+     </dependencies>
     <build>
         <plugins>
             <plugin>
